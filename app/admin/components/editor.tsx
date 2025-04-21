@@ -16,11 +16,11 @@ import {
 import { Label } from '@/components/ui/label';
 import {
   Wand2,
-  RefreshCw,
-  Copy,
-  ExternalLink,
+  // RefreshCw,
+  // Copy,
+  // ExternalLink,
   X,
-  Download,
+  // Download,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Notification, useNotification } from '@/components/ui/notification';
@@ -43,26 +43,12 @@ export default function Editor({
     model_name: '',
     temperature: 0,
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
   // Notification system
   const { notification, showNotification, hideNotification } =
     useNotification();
   const { models, prompts } = useAppStore();
-
-  useEffect(() => {
-    console.log('Data in splash: ', models, prompts);
-    if (prompts && models) {
-      initializeValues();
-    }
-  }, [models, prompts]);
-
-  useEffect(() => {
-    console.log('subMode is: ', subMode);
-    if (prompts && models) {
-      initializeValues();
-    }
-  }, [subMode]);
 
   const initializeValues = () => {
     if (mode === 'splash') {
@@ -94,6 +80,21 @@ export default function Editor({
       return;
     }
   };
+
+  useEffect(() => {
+    console.log('Data in splash: ', models, prompts);
+    if (prompts && models) {
+      initializeValues();
+    }
+    setIsLoading(false);
+  }, [models, prompts, initializeValues]);
+
+  useEffect(() => {
+    console.log('subMode is: ', subMode);
+    if (prompts && models) {
+      initializeValues();
+    }
+  }, [subMode, initializeValues]);
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);

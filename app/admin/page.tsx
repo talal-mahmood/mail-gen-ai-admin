@@ -8,8 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getAllModels, getAllPrompts } from '@/lib/api/common';
 import useAppStore from '@/lib/store';
 
-type Prompts = {};
-type Models = {};
+// type Prompts = {};
+// type Models = {};
 
 export default function MagicBox() {
   const [activeTab, setActiveTab] = useState('splash');
