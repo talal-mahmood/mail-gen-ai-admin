@@ -12,7 +12,7 @@ export async function getPrompt(): Promise<any> {
 
   try {
     // ${baseUrl} (removed for it to work with vercel)
-    const response = await fetch(`${baseUrl}/v1/templates/splash_page`, {
+    const response = await fetch(`/v1/templates/splash_page`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -46,7 +46,7 @@ export async function savePrompt({
 
   try {
     // ${baseUrl} (removed for it to work with vercel)
-    const response = await fetch(`${baseUrl}/v1/templates/${mode}`, {
+    const response = await fetch(`/v1/templates/${mode}`, {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
@@ -74,7 +74,7 @@ export async function getModel(): Promise<any> {
 
   try {
     // ${baseUrl} (removed for it to work with vercel)
-    const response = await fetch(`${baseUrl}/v1/models/splash_page`, {
+    const response = await fetch(`/v1/models/splash_page`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -108,7 +108,7 @@ export async function saveModel({
 
   try {
     // ${baseUrl} (removed for it to work with vercel)
-    const response = await fetch(`${baseUrl}/v1/models/${mode}`, {
+    const response = await fetch(`/v1/models/${mode}`, {
       method: 'PUT',
       headers: {
         Accept: 'application/json',

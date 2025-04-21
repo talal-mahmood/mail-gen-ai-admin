@@ -7,7 +7,7 @@ export async function getAllPrompts(): Promise<any> {
 
   try {
     // ${baseUrl} (removed for it to work with vercel)
-    const response = await fetch(`${baseUrl}/v1/templates/`, {
+    const response = await fetch(`/v1/templates/`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -35,7 +35,7 @@ export async function getAllModels(): Promise<any> {
 
   try {
     // ${baseUrl} (removed for it to work with vercel)
-    const response = await fetch(`${baseUrl}/v1/models/`, {
+    const response = await fetch(`/v1/models/`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
