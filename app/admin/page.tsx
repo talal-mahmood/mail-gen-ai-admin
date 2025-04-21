@@ -5,13 +5,13 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Editor from './components/editor';
 import { Sparkles, Mail, ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getAllModels, getAllPrompts } from '@/lib/api/common';
+import { getAllModels, getAllPrompts } from '@/lib/api';
 import useAppStore from '@/lib/store';
 
 // type Prompts = {};
 // type Models = {};
 
-export default function MagicBox() {
+export default function Admin() {
   const [activeTab, setActiveTab] = useState('splash');
   const [mounted, setMounted] = useState(false);
   const { setModels, setPrompts } = useAppStore();

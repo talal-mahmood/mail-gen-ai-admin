@@ -1,31 +1,12 @@
 'use client';
 
-import type React from 'react';
-
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import {
-  Wand2,
-  // RefreshCw,
-  // Copy,
-  // ExternalLink,
-  X,
-  // Download,
-} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Notification, useNotification } from '@/components/ui/notification';
 import useAppStore from '@/lib/store';
-import { savePrompt, saveModel } from '@/lib/api/splash';
+import { savePrompt, saveModel } from '@/lib/api';
+import EditorForm from './editor-form';
+import SubTabs from './sub-tabs';
 
 type Model = {
   model_name: string;
@@ -43,8 +24,11 @@ export default function Editor({
     model_name: '',
     temperature: 0,
   });
+  const [activeTab, setActiveTab] = useState<string>(
+    mode === 'banner' ? 'blurb' : 'bold'
+  );
+
   const [isLoading, setIsLoading] = useState(true);
-  const [showConfirmation, setShowConfirmation] = useState(false);
   // Notification system
   const { notification, showNotification, hideNotification } =
     useNotification();
@@ -172,7 +156,7 @@ export default function Editor({
         isOpen={notification.isOpen}
         onClose={hideNotification}
       />
-
+      <SubTabs mode={mode} activeTab={activeTab} setActiveTab={setActiveTab} />
       {/* User Input Form */}
       <AnimatePresence mode='wait'>
         {!isLoading ? (
@@ -184,7 +168,7 @@ export default function Editor({
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {mode === 'email' && (
+            {(mode === 'email' || mode === 'banner') && (
               <div className='w-max small:w-full relative mb-6'>
                 <div className='flex small:flex-col flex-row gap-4 small:gap-0 items-center justify-between w-full relative'>
                   {/* Tabs */}
@@ -198,12 +182,10 @@ export default function Editor({
                   >
                     Generation Prompt
                   </button>
-
                   {/* OR separator */}
                   <div className='text-gray-500 font-medium select-none'>
                     - OR -
                   </div>
-
                   <button
                     onClick={() => setSubMode('update')}
                     className={`relative z-10 px-4 py-2 transition-all duration-300 w-full sm:w-auto text-center ${
@@ -214,7 +196,6 @@ export default function Editor({
                   >
                     Updation Prompt
                   </button>
-
                   {/* Animated underline - only visible on desktop */}
                   <div
                     className='absolute bottom-0 h-[2px] bg-blue-400 transition-all duration-300 small:hidden block'
@@ -227,100 +208,16 @@ export default function Editor({
                 </div>
               </div>
             )}
-            <div className='grid grid-cols-1 gap-4 mb-6'>
-              <motion.div
-                className='mb-6 relative space-y-6'
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{
-                  duration: 0.3,
-                  height: {
-                    duration: 0.3,
-                  },
-                  opacity: {
-                    duration: 0.2,
-                  },
-                }}
-              >
-                <div>
-                  <Label
-                    htmlFor='query'
-                    className='block mb-2 font-semibold text-blue-300'
-                  >
-                    Prompt
-                  </Label>
-                  <Textarea
-                    id='prompt'
-                    value={prompt}
-                    onChange={handlePromptChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder={`Enter your prompt`}
-                    rows={3}
-                    className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
-                  />
-                </div>
-                <div className='space-y-4'>
-                  <div>
-                    <Label
-                      htmlFor='query'
-                      className='block mb-2 font-semibold text-blue-300'
-                    >
-                      Model
-                    </Label>
-                    <Select
-                      value={model?.model_name}
-                      onValueChange={handleModelChange}
-                    >
-                      <SelectTrigger className='w-full p-3 bg-gray-800 border border-gray-600 text-white'>
-                        <SelectValue placeholder='Select model' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='gpt-4o'>gpt-4o</SelectItem>
-
-                        <SelectItem value='gpt-4o-mini'>gpt-4o-mini</SelectItem>
-                        <SelectItem value='gpt-3o-mini'>gpt-3o-mini</SelectItem>
-
-                        <SelectItem value='o3-mini'>o3-mini</SelectItem>
-                        <SelectItem value='o4-mini'>o4-mini</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor='query'
-                      className='block mb-2 font-semibold text-blue-300'
-                    >
-                      Tempurature
-                    </Label>
-                    <Input
-                      id='temperature'
-                      type='number'
-                      min={0}
-                      max={1}
-                      step={0.01}
-                      value={model?.temperature}
-                      onChange={handleTemperatureChange}
-                      className='w-full p-3 bg-gray-800 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Button
-                onClick={saveNewData}
-                disabled={isLoading}
-                className='w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300'
-              >
-                <Wand2 className='mr-2 h-4 w-4' /> Save Changes
-              </Button>
-            </motion.div>
+            <EditorForm
+              model={model}
+              prompt={prompt}
+              isLoading={isLoading}
+              handleModelChange={handleModelChange}
+              handleTemperatureChange={handleTemperatureChange}
+              handlePromptChange={handlePromptChange}
+              handleKeyDown={handleKeyDown}
+              saveNewData={saveNewData}
+            />
           </motion.div>
         ) : (
           <motion.div
@@ -348,74 +245,6 @@ export default function Editor({
                 .
               </span>
             </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Confirmation Dialog */}
-      <AnimatePresence>
-        {showConfirmation && (
-          <motion.div
-            className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowConfirmation(false)}
-          >
-            <motion.div
-              className='bg-gray-800 p-6 rounded-lg max-w-md w-full'
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className='flex justify-between items-center mb-2'>
-                <h3 className='text-lg font-semibold text-white'>
-                  Clear the Slate?
-                </h3>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => setShowConfirmation(false)}
-                  className='h-8 w-8 rounded-full hover:bg-gray-700'
-                >
-                  <X className='h-4 w-4' />
-                </Button>
-              </div>
-              <p className='text-gray-300 text-base mb-6 [text-shadow:none]'>
-                Poof! All your current work will vanish so you can start
-                something brand new. Ready to begin again?
-              </p>
-              <div className='flex justify-end gap-3'>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    variant='outline'
-                    onClick={() => setShowConfirmation(false)}
-                    className='text-red-500 bg-transparent border-red-500 hover:bg-red-500 hover:text-white transition-colors duration-200'
-                  >
-                    Cancel
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    onClick={() => {
-                      setShowConfirmation(false);
-                      showNotification('info', 'No changes were made!');
-                    }}
-                    className='bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-300'
-                  >
-                    Confirm
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

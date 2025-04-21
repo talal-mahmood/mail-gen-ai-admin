@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MagicBox',
+  title: 'Admin Panel',
   description: 'Generate marketing content using ai',
   icons: {
     icon: '/magic-favicon.png', // Path to your favicon
