@@ -57,6 +57,13 @@ export default function Editor({
     }
   }, [models, prompts]);
 
+  useEffect(() => {
+    console.log('subMode is: ', subMode);
+    if (prompts && models) {
+      initializeValues();
+    }
+  }, [subMode]);
+
   const initializeValues = () => {
     if (mode === 'splash') {
       console.log('splash_prompt: ', prompts.splash_page);
@@ -73,8 +80,8 @@ export default function Editor({
         return;
       }
       if (subMode === 'update') {
-        console.log('email_generation_prompt: ', prompts.email_generation);
-        setPrompt(prompts.email_generation);
+        console.log('email_refinement_prompt: ', prompts.email_refinement);
+        setPrompt(prompts.email_refinement);
         setModel(models.email);
         return;
       }
@@ -176,46 +183,49 @@ export default function Editor({
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <div className='w-max small:w-full relative mb-6'>
-              <div className='flex small:flex-col flex-row gap-4 small:gap-0 items-center justify-between w-full relative'>
-                {/* Tabs */}
-                <button
-                  onClick={() => setSubMode('generate')}
-                  className={`relative z-10 px-4 py-2 transition-all duration-300 w-full sm:w-auto text-center ${
-                    subMode === 'generate'
-                      ? 'text-blue-400 font-semibold'
-                      : 'text-gray-400 hover:text-gray-300'
-                  }`}
-                >
-                  Generation Prompt
-                </button>
+            {mode === 'email' && (
+              <div className='w-max small:w-full relative mb-6'>
+                <div className='flex small:flex-col flex-row gap-4 small:gap-0 items-center justify-between w-full relative'>
+                  {/* Tabs */}
+                  <button
+                    onClick={() => setSubMode('generate')}
+                    className={`relative z-10 px-4 py-2 transition-all duration-300 w-full sm:w-auto text-center ${
+                      subMode === 'generate'
+                        ? 'text-blue-400 font-semibold'
+                        : 'text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Generation Prompt
+                  </button>
 
-                {/* OR separator */}
-                <div className='text-gray-500 font-medium select-none'>
-                  - OR -
+                  {/* OR separator */}
+                  <div className='text-gray-500 font-medium select-none'>
+                    - OR -
+                  </div>
+
+                  <button
+                    onClick={() => setSubMode('update')}
+                    className={`relative z-10 px-4 py-2 transition-all duration-300 w-full sm:w-auto text-center ${
+                      subMode === 'update'
+                        ? 'text-blue-400 font-semibold'
+                        : 'text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Updation Prompt
+                  </button>
+
+                  {/* Animated underline - only visible on desktop */}
+                  <div
+                    className='absolute bottom-0 h-[2px] bg-blue-400 transition-all duration-300 small:hidden block'
+                    style={{
+                      left:
+                        subMode === 'generate' ? '0%' : 'calc(100% - 154px)',
+                      width: subMode === 'generate' ? '175px' : '150px',
+                    }}
+                  ></div>
                 </div>
-
-                <button
-                  onClick={() => setSubMode('update')}
-                  className={`relative z-10 px-4 py-2 transition-all duration-300 w-full sm:w-auto text-center ${
-                    subMode === 'update'
-                      ? 'text-blue-400 font-semibold'
-                      : 'text-gray-400 hover:text-gray-300'
-                  }`}
-                >
-                  Updation Prompt
-                </button>
-
-                {/* Animated underline - only visible on desktop */}
-                <div
-                  className='absolute bottom-0 h-[2px] bg-blue-400 transition-all duration-300 small:hidden block'
-                  style={{
-                    left: subMode === 'generate' ? '0%' : 'calc(100% - 154px)',
-                    width: subMode === 'generate' ? '175px' : '150px',
-                  }}
-                ></div>
               </div>
-            </div>
+            )}
             <div className='grid grid-cols-1 gap-4 mb-6'>
               <motion.div
                 className='mb-6 relative space-y-6'
