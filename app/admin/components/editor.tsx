@@ -60,7 +60,7 @@ export default function Editor({
       console.log('banner_prompt: ', prompts.banner);
       // console.log(prompts);
       setPrompt(prompts.banner);
-      setModel(models.banners);
+      setModel(models.banner);
       return;
     }
   };
