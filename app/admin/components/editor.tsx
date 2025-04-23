@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Notification, useNotification } from '@/components/ui/notification';
 import useAppStore from '@/lib/store';
-import { savePrompt, saveModel } from '@/lib/api';
+import { savePrompt, saveModel, getAllPrompts, getAllModels } from '@/lib/api';
 import EditorForm from './editor-form';
 import SubTabs from './sub-tabs';
 
@@ -32,36 +32,134 @@ export default function Editor({
   // Notification system
   const { notification, showNotification, hideNotification } =
     useNotification();
-  const { models, prompts } = useAppStore();
+  const { models, prompts, setModels, setPrompts } = useAppStore();
 
   const initializeValues = () => {
     if (mode === 'splash') {
-      console.log('splash_prompt: ', prompts.splash_page);
+      console.log('---------------here---------------');
+      console.log(prompt);
+      console.log('splash_prompt: ', prompts.splash_page || '');
       // console.log(prompts);
-      setPrompt(prompts.splash_page);
-      setModel(models.splash_page);
+      setPrompt(prompts.splash_page || '');
+      setModel(
+        models.splash_page || {
+          model_name: '',
+          temperature: 0,
+        }
+      );
       return;
     }
     if (mode === 'email') {
-      if (subMode === 'generate') {
-        console.log('email_generation_prompt: ', prompts.email_generation);
-        setPrompt(prompts.email_generation);
-        setModel(models.email);
-        return;
+      if (activeTab === 'bold') {
+        if (subMode === 'generate') {
+          console.log(
+            'professional_email_generation_prompt: ',
+            prompts.professional_email_generation || ''
+          );
+          setPrompt(prompts.professional_email_generation || '');
+          setModel(
+            models.professional_email || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
+        if (subMode === 'update') {
+          console.log(
+            'professional_email_refinement_prompt: ',
+            prompts.professional_email_refinement || ''
+          );
+          setPrompt(prompts.professional_email_refinement || '');
+          setModel(
+            models.professional_email || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
       }
-      if (subMode === 'update') {
-        console.log('email_refinement_prompt: ', prompts.email_refinement);
-        setPrompt(prompts.email_refinement);
-        setModel(models.email);
-        return;
+      if (activeTab === 'cozy') {
+        if (subMode === 'generate') {
+          console.log(
+            'casual_email_generation_prompt: ',
+            prompts.casual_email_generation || ''
+          );
+          setPrompt(prompts.casual_email_generation || '');
+          setModel(
+            models.casual_email || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
+        if (subMode === 'update') {
+          console.log(
+            'casual_email_refinement_prompt: ',
+            prompts.casual_email_refinement || ''
+          );
+          setPrompt(prompts.casual_email_refinement || '');
+          setModel(
+            models.casual_email || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
       }
     }
     if (mode === 'banner') {
-      console.log('banner_prompt: ', prompts.banner);
-      // console.log(prompts);
-      setPrompt(prompts.banner);
-      setModel(models.banner);
-      return;
+      if (activeTab === 'blurb') {
+        if (subMode === 'generate') {
+          console.log('banner_prompt: ', prompts.blurb_generation || '');
+          setPrompt(prompts.blurb_generation || '');
+          setModel(
+            models.blurb || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
+        if (subMode === 'update') {
+          console.log('banner_prompt: ', prompts.blurb_refinement || '');
+          setPrompt(prompts.blurb_refinement || '');
+          setModel(
+            models.blurb || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
+      }
+      if (activeTab === 'banner') {
+        if (subMode === 'generate') {
+          console.log('banner_prompt: ', prompts.banner_generation || '');
+          setPrompt(prompts.banner_generation || '');
+          setModel(
+            models.banner || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
+        if (subMode === 'update') {
+          console.log('banner_prompt: ', prompts.banner_refinement || '');
+          setPrompt(prompts.banner_refinement || '');
+          setModel(
+            models.banner || {
+              model_name: '',
+              temperature: 0,
+            }
+          );
+          return;
+        }
+      }
     }
   };
 
@@ -71,16 +169,18 @@ export default function Editor({
       initializeValues();
     }
     setIsLoading(false);
-  }, [models, prompts, initializeValues]);
+  }, [models, prompts]);
 
   useEffect(() => {
     console.log('subMode is: ', subMode);
     if (prompts && models) {
       initializeValues();
     }
-  }, [subMode, initializeValues]);
+  }, [mode, subMode, activeTab]);
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // console.log('---------------here---------------');
+    // console.log(e.target.value, prompt);
     setPrompt(e.target.value);
   };
 
@@ -111,39 +211,147 @@ export default function Editor({
       console.log(promptRes);
       const modelRes = await saveModel({ mode: 'splash_page', model });
       console.log(modelRes);
+      const newPrompts = await getAllPrompts();
+      const newModels = await getAllModels();
+      setPrompts(newPrompts);
+      setModels(newModels);
       return;
     }
     if (mode === 'email') {
-      if (subMode === 'generate') {
-        const promptRes = await savePrompt({
-          mode: 'email_generation',
-          prompt,
-        });
-        console.log(promptRes);
-        const modelRes = await saveModel({ mode: 'email', model });
-        console.log(modelRes);
-        return;
+      if (activeTab === 'bold') {
+        if (subMode === 'generate') {
+          const promptRes = await savePrompt({
+            mode: 'professional_email_generation',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({
+            mode: 'professional_email',
+            model,
+          });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
+        if (subMode === 'update') {
+          const promptRes = await savePrompt({
+            mode: 'professional_email_refinement',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({
+            mode: 'professional_email',
+            model,
+          });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
       }
-      if (subMode === 'update') {
-        const promptRes = await savePrompt({
-          mode: 'email_refinement',
-          prompt,
-        });
-        console.log(promptRes);
-        const modelRes = await saveModel({ mode: 'email', model });
-        console.log(modelRes);
-        return;
+      if (activeTab === 'cozy') {
+        if (subMode === 'generate') {
+          const promptRes = await savePrompt({
+            mode: 'casual_email_generation',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({
+            mode: 'casual_email',
+            model,
+          });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
+        if (subMode === 'update') {
+          const promptRes = await savePrompt({
+            mode: 'casual_email_refinement',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({
+            mode: 'casual_email',
+            model,
+          });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
       }
     }
     if (mode === 'banner') {
-      const promptRes = await savePrompt({
-        mode: 'banner',
-        prompt,
-      });
-      console.log(promptRes);
-      const modelRes = await saveModel({ mode: 'banner', model });
-      console.log(modelRes);
-      return;
+      if (activeTab === 'blurb') {
+        if (subMode === 'generate') {
+          const promptRes = await savePrompt({
+            mode: 'blurb_generation',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({ mode: 'blurb', model });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
+        if (subMode === 'update') {
+          const promptRes = await savePrompt({
+            mode: 'blurb_refinement',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({ mode: 'blurb', model });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
+      }
+      if (activeTab === 'banner') {
+        if (subMode === 'generate') {
+          const promptRes = await savePrompt({
+            mode: 'banner_generation',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({ mode: 'banner', model });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
+        if (subMode === 'update') {
+          const promptRes = await savePrompt({
+            mode: 'banner_refinement',
+            prompt,
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({ mode: 'banner', model });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          return;
+        }
+      }
     }
   };
 
@@ -156,7 +364,14 @@ export default function Editor({
         isOpen={notification.isOpen}
         onClose={hideNotification}
       />
-      <SubTabs mode={mode} activeTab={activeTab} setActiveTab={setActiveTab} />
+      {(mode === 'email' || mode === 'banner') && (
+        <SubTabs
+          mode={mode}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      )}
+
       {/* User Input Form */}
       <AnimatePresence mode='wait'>
         {!isLoading ? (
