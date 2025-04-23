@@ -2,7 +2,6 @@
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 
 const SubTabs = ({
   mode,

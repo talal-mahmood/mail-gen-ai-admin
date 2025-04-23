@@ -30,8 +30,11 @@ export default function Editor({
 
   const [isLoading, setIsLoading] = useState(true);
   // Notification system
-  const { notification, showNotification, hideNotification } =
-    useNotification();
+  const {
+    notification,
+    // showNotification,
+    hideNotification,
+  } = useNotification();
   const { models, prompts, setModels, setPrompts } = useAppStore();
 
   const initializeValues = () => {

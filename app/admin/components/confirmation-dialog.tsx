@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
-import { Notification, NotificationType } from '@/components/ui/notification';
+import {
+  // Notification,
+  NotificationType,
+} from '@/components/ui/notification';
 
 const ConfirmationDialog = ({
   open,
