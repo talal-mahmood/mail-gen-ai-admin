@@ -30,11 +30,8 @@ export default function Editor({
 
   const [isLoading, setIsLoading] = useState(true);
   // Notification system
-  const {
-    notification,
-    // showNotification,
-    hideNotification,
-  } = useNotification();
+  const { notification, showNotification, hideNotification } =
+    useNotification();
   const { models, prompts, setModels, setPrompts } = useAppStore();
 
   const initializeValues = () => {
@@ -169,7 +166,11 @@ export default function Editor({
   useEffect(() => {
     console.log('Data in splash: ', models, prompts);
     if (prompts && models) {
-      initializeValues();
+      try {
+        initializeValues();
+      } catch {
+        showNotification('error', 'Failed to fetch data from server');
+      }
     }
     setIsLoading(false);
   }, [models, prompts]);
@@ -177,7 +178,11 @@ export default function Editor({
   useEffect(() => {
     console.log('subMode is: ', subMode);
     if (prompts && models) {
-      initializeValues();
+      try {
+        initializeValues();
+      } catch {
+        showNotification('error', 'Failed to fetch data from server');
+      }
     }
   }, [mode, subMode, activeTab]);
 
@@ -206,155 +211,168 @@ export default function Editor({
   };
 
   const saveNewData = async () => {
-    if (mode === 'splash') {
-      const promptRes = await savePrompt({
-        mode: 'splash_page',
-        prompt,
-      });
-      console.log(promptRes);
-      const modelRes = await saveModel({ mode: 'splash_page', model });
-      console.log(modelRes);
-      const newPrompts = await getAllPrompts();
-      const newModels = await getAllModels();
-      setPrompts(newPrompts);
-      setModels(newModels);
-      return;
-    }
-    if (mode === 'email') {
-      if (activeTab === 'bold') {
-        if (subMode === 'generate') {
-          const promptRes = await savePrompt({
-            mode: 'professional_email_generation',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({
-            mode: 'professional_email',
-            model,
-          });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
+    try {
+      if (mode === 'splash') {
+        const promptRes = await savePrompt({
+          mode: 'splash_page',
+          prompt,
+        });
+        console.log(promptRes);
+        const modelRes = await saveModel({ mode: 'splash_page', model });
+        console.log(modelRes);
+        const newPrompts = await getAllPrompts();
+        const newModels = await getAllModels();
+        setPrompts(newPrompts);
+        setModels(newModels);
+        showNotification('success', 'Updates were made successfully');
+        return;
+      }
+      if (mode === 'email') {
+        if (activeTab === 'bold') {
+          if (subMode === 'generate') {
+            const promptRes = await savePrompt({
+              mode: 'professional_email_generation',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({
+              mode: 'professional_email',
+              model,
+            });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
+          if (subMode === 'update') {
+            const promptRes = await savePrompt({
+              mode: 'professional_email_refinement',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({
+              mode: 'professional_email',
+              model,
+            });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
         }
-        if (subMode === 'update') {
-          const promptRes = await savePrompt({
-            mode: 'professional_email_refinement',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({
-            mode: 'professional_email',
-            model,
-          });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
+        if (activeTab === 'cozy') {
+          if (subMode === 'generate') {
+            const promptRes = await savePrompt({
+              mode: 'casual_email_generation',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({
+              mode: 'casual_email',
+              model,
+            });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
+          if (subMode === 'update') {
+            const promptRes = await savePrompt({
+              mode: 'casual_email_refinement',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({
+              mode: 'casual_email',
+              model,
+            });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
         }
       }
-      if (activeTab === 'cozy') {
-        if (subMode === 'generate') {
-          const promptRes = await savePrompt({
-            mode: 'casual_email_generation',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({
-            mode: 'casual_email',
-            model,
-          });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
+      if (mode === 'banner') {
+        if (activeTab === 'blurb') {
+          if (subMode === 'generate') {
+            const promptRes = await savePrompt({
+              mode: 'blurb_generation',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({ mode: 'blurb', model });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
+          if (subMode === 'update') {
+            const promptRes = await savePrompt({
+              mode: 'blurb_refinement',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({ mode: 'blurb', model });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
         }
-        if (subMode === 'update') {
-          const promptRes = await savePrompt({
-            mode: 'casual_email_refinement',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({
-            mode: 'casual_email',
-            model,
-          });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
-        }
-      }
-    }
-    if (mode === 'banner') {
-      if (activeTab === 'blurb') {
-        if (subMode === 'generate') {
-          const promptRes = await savePrompt({
-            mode: 'blurb_generation',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({ mode: 'blurb', model });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
-        }
-        if (subMode === 'update') {
-          const promptRes = await savePrompt({
-            mode: 'blurb_refinement',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({ mode: 'blurb', model });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
+        if (activeTab === 'banner') {
+          if (subMode === 'generate') {
+            const promptRes = await savePrompt({
+              mode: 'banner_generation',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({ mode: 'banner', model });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
+          if (subMode === 'update') {
+            const promptRes = await savePrompt({
+              mode: 'banner_refinement',
+              prompt,
+            });
+            console.log(promptRes);
+            const modelRes = await saveModel({ mode: 'banner', model });
+            console.log(modelRes);
+            const newPrompts = await getAllPrompts();
+            const newModels = await getAllModels();
+            setPrompts(newPrompts);
+            setModels(newModels);
+            showNotification('success', 'Updates were made successfully');
+            return;
+          }
         }
       }
-      if (activeTab === 'banner') {
-        if (subMode === 'generate') {
-          const promptRes = await savePrompt({
-            mode: 'banner_generation',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({ mode: 'banner', model });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
-        }
-        if (subMode === 'update') {
-          const promptRes = await savePrompt({
-            mode: 'banner_refinement',
-            prompt,
-          });
-          console.log(promptRes);
-          const modelRes = await saveModel({ mode: 'banner', model });
-          console.log(modelRes);
-          const newPrompts = await getAllPrompts();
-          const newModels = await getAllModels();
-          setPrompts(newPrompts);
-          setModels(newModels);
-          return;
-        }
-      }
+    } catch {
+      showNotification('error', 'Unable to make updates at this time');
     }
   };
 
