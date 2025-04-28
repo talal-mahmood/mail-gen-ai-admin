@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Label } from '@radix-ui/react-label';
 import { Textarea } from '@/components/ui/textarea';
@@ -39,13 +39,13 @@ const EditorForm = ({
   handleTemperatureChange,
   saveNewData,
 }: EditorFormProps) => {
-  const [inputText, setInputText] = useState('');
+  // const [inputText, setInputText] = useState('');
 
-  const replaceCurlyBraces = (text: string) => {
-    return text
-      .replace(/(?<!\{)\{(?!\{)/g, '{{') // Single { → {{
-      .replace(/(?<!\})\}(?!\})/g, '}}'); // Single } → }}
-  };
+  // const replaceCurlyBraces = (text: string) => {
+  //   return text
+  //     .replace(/(?<!\{)\{(?!\{)/g, '{{') // Single { → {{
+  //     .replace(/(?<!\})\}(?!\})/g, '}}'); // Single } → }}
+  // };
   return (
     <>
       <div className='grid grid-cols-1 gap-4 mb-6'>
