@@ -210,12 +210,18 @@ export default function Editor({
     }
   };
 
+  const replaceCurlyBraces = (text: string) => {
+    return text
+      .replace(/(?<!\{)\{(?!\{)/g, '{{') // Single { → {{
+      .replace(/(?<!\})\}(?!\})/g, '}}'); // Single } → }}
+  };
+
   const saveNewData = async () => {
     try {
       if (mode === 'splash') {
         const promptRes = await savePrompt({
           mode: 'splash_page',
-          prompt,
+          prompt: replaceCurlyBraces(prompt),
         });
         console.log(promptRes);
         const modelRes = await saveModel({ mode: 'splash_page', model });
@@ -232,7 +238,7 @@ export default function Editor({
           if (subMode === 'generate') {
             const promptRes = await savePrompt({
               mode: 'professional_email_generation',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({
@@ -250,7 +256,7 @@ export default function Editor({
           if (subMode === 'update') {
             const promptRes = await savePrompt({
               mode: 'professional_email_refinement',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({
@@ -270,7 +276,7 @@ export default function Editor({
           if (subMode === 'generate') {
             const promptRes = await savePrompt({
               mode: 'casual_email_generation',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({
@@ -288,7 +294,7 @@ export default function Editor({
           if (subMode === 'update') {
             const promptRes = await savePrompt({
               mode: 'casual_email_refinement',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({
@@ -310,7 +316,7 @@ export default function Editor({
           if (subMode === 'generate') {
             const promptRes = await savePrompt({
               mode: 'blurb_generation',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({ mode: 'blurb', model });
@@ -325,7 +331,7 @@ export default function Editor({
           if (subMode === 'update') {
             const promptRes = await savePrompt({
               mode: 'blurb_refinement',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({ mode: 'blurb', model });
@@ -342,7 +348,7 @@ export default function Editor({
           if (subMode === 'generate') {
             const promptRes = await savePrompt({
               mode: 'banner_generation',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({ mode: 'banner', model });
@@ -357,7 +363,7 @@ export default function Editor({
           if (subMode === 'update') {
             const promptRes = await savePrompt({
               mode: 'banner_refinement',
-              prompt,
+              prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
             const modelRes = await saveModel({ mode: 'banner', model });

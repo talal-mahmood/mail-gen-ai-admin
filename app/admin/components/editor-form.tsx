@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Label } from '@radix-ui/react-label';
 import { Textarea } from '@/components/ui/textarea';
@@ -39,6 +39,13 @@ const EditorForm = ({
   handleTemperatureChange,
   saveNewData,
 }: EditorFormProps) => {
+  const [inputText, setInputText] = useState('');
+
+  const replaceCurlyBraces = (text: string) => {
+    return text
+      .replace(/(?<!\{)\{(?!\{)/g, '{{') // Single { → {{
+      .replace(/(?<!\})\}(?!\})/g, '}}'); // Single } → }}
+  };
   return (
     <>
       <div className='grid grid-cols-1 gap-4 mb-6'>
@@ -57,6 +64,36 @@ const EditorForm = ({
             },
           }}
         >
+          {/* <div style={{ margin: '20px 0' }}>
+            <Label htmlFor='test-input'>Input Text:</Label>
+            <Input
+              id='test-input'
+              type='text'
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px',
+                marginTop: '8px',
+                border: '1px solid #ccc',
+              }}
+              placeholder='Type text with curly braces...'
+            />
+          </div>
+          <div style={{ margin: '20px 0' }}>
+            <Label>Transformed Output:</Label>
+            <div
+              style={{
+                padding: '12px',
+                marginTop: '8px',
+                border: '1px solid #ddd',
+                minHeight: '50px',
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              {replaceCurlyBraces(inputText)}
+            </div>
+          </div> */}
           <div>
             <Label
               htmlFor='query'
@@ -70,7 +107,7 @@ const EditorForm = ({
               onChange={handlePromptChange}
               onKeyDown={handleKeyDown}
               placeholder={`Enter your prompt`}
-              rows={3}
+              rows={5}
               className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
             />
           </div>
@@ -92,7 +129,7 @@ const EditorForm = ({
                 <SelectContent>
                   <SelectItem value='gpt-4o'>gpt-4o</SelectItem>
                   <SelectItem value='gpt-4o-mini'>gpt-4o-mini</SelectItem>
-                  <SelectItem value='gpt-3o-mini'>gpt-3o-mini</SelectItem>
+                  {/* <SelectItem value='gpt-3o-mini'>gpt-3o-mini</SelectItem> */}
                   <SelectItem value='o3-mini'>o3-mini</SelectItem>
                   <SelectItem value='o4-mini'>o4-mini</SelectItem>
                 </SelectContent>
