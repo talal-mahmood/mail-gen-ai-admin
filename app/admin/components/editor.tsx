@@ -38,16 +38,46 @@ export default function Editor({
     if (mode === 'splash') {
       console.log('---------------here---------------');
       console.log(prompt);
-      console.log('splash_prompt: ', prompts.splash_page || '');
-      // console.log(prompts);
-      setPrompt(prompts.splash_page || '');
-      setModel(
-        models.splash_page || {
-          model_name: '',
-          temperature: 0,
-        }
-      );
-      return;
+      // console.log(
+      //   'mode is: ',
+      //   mode,
+      //   'subMode is: ',
+      //   subMode,
+      //   'activeTab is: ',
+      //   activeTab
+      // );
+      if (activeTab === 'bold') {
+        console.log('still here');
+        console.log(
+          'splash_page_casual prompt: ',
+          prompts.splash_page_casual || ''
+        );
+        // console.log(prompts);
+        setPrompt(prompts.splash_page_casual || '');
+        setModel(
+          models.splash_page || {
+            model_name: '',
+            temperature: 0,
+          }
+        );
+        return;
+      }
+      if (activeTab === 'cozy') {
+        console.log('not there');
+        console.log(
+          'splash_page_professional prompt: ',
+          prompts.splash_page_professional || ''
+        );
+        // console.log(prompts);
+        setPrompt(prompts.splash_page_professional || '');
+        setModel(
+          models.splash_page || {
+            model_name: '',
+            temperature: 0,
+          }
+        );
+        return;
+      }
     }
     if (mode === 'email') {
       if (activeTab === 'bold') {
@@ -176,7 +206,14 @@ export default function Editor({
   }, [models, prompts]);
 
   useEffect(() => {
-    console.log('subMode is: ', subMode);
+    console.log(
+      'mode is: ',
+      mode,
+      'subMode is: ',
+      subMode,
+      'activeTab is: ',
+      activeTab
+    );
     if (prompts && models) {
       try {
         initializeValues();
@@ -219,19 +256,39 @@ export default function Editor({
   const saveNewData = async () => {
     try {
       if (mode === 'splash') {
-        const promptRes = await savePrompt({
-          mode: 'splash_page',
-          prompt: replaceCurlyBraces(prompt),
-        });
-        console.log(promptRes);
-        const modelRes = await saveModel({ mode: 'splash_page', model });
-        console.log(modelRes);
-        const newPrompts = await getAllPrompts();
-        const newModels = await getAllModels();
-        setPrompts(newPrompts);
-        setModels(newModels);
-        showNotification('success', 'Updates were made successfully');
-        return;
+        if (activeTab === 'bold') {
+          const promptRes = await savePrompt({
+            mode: 'splash_page_casual',
+            prompt: replaceCurlyBraces(prompt),
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({ mode: 'splash_page', model });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          showNotification('success', 'Updates were made successfully');
+          return;
+        }
+        if (activeTab === 'cozy') {
+          const promptRes = await savePrompt({
+            mode: 'splash_page_professional',
+            prompt: replaceCurlyBraces(prompt),
+          });
+          console.log(promptRes);
+          const modelRes = await saveModel({
+            mode: 'splash_page',
+            model,
+          });
+          console.log(modelRes);
+          const newPrompts = await getAllPrompts();
+          const newModels = await getAllModels();
+          setPrompts(newPrompts);
+          setModels(newModels);
+          showNotification('success', 'Updates were made successfully');
+          return;
+        }
       }
       if (mode === 'email') {
         if (activeTab === 'bold') {
@@ -391,7 +448,7 @@ export default function Editor({
         isOpen={notification.isOpen}
         onClose={hideNotification}
       />
-      {(mode === 'email' || mode === 'banner') && (
+      {(mode === 'email' || mode === 'banner' || true) && (
         <SubTabs
           mode={mode}
           activeTab={activeTab}
