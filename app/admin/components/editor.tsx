@@ -4,13 +4,27 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Notification, useNotification } from '@/components/ui/notification';
 import useAppStore from '@/lib/store';
-import { savePrompt, saveModel, getAllPrompts, getAllModels } from '@/lib/api';
-import EditorForm from './editor-form';
+import {
+  savePrompt,
+  saveModel,
+  getAllPrompts,
+  getAllModels,
+  saveConfig,
+  getAllConfigs,
+} from '@/lib/api';
+import PromptForm from './prompt-form';
 import SubTabs from './sub-tabs';
+import ConfigForm from './config-form';
 
 type Model = {
   model_name: string;
   temperature: number;
+};
+
+type Config = {
+  placeholder: string;
+  heading: string;
+  subheading: string;
 };
 
 export default function Editor({
@@ -24,6 +38,12 @@ export default function Editor({
     model_name: '',
     temperature: 0,
   });
+  const [config, setConfig] = useState<Config>({
+    placeholder: '',
+    heading: '',
+    subheading: '',
+  });
+
   const [activeTab, setActiveTab] = useState<string>(
     mode === 'banner' ? 'blurb' : 'bold'
   );
@@ -32,12 +52,13 @@ export default function Editor({
   // Notification system
   const { notification, showNotification, hideNotification } =
     useNotification();
-  const { models, prompts, setModels, setPrompts } = useAppStore();
+  const { models, prompts, configs, setModels, setPrompts, setConfigs } =
+    useAppStore();
 
   const initializeValues = () => {
     if (mode === 'splash') {
       console.log('---------------here---------------');
-      console.log(prompt);
+      console.log(configs);
       // console.log(
       //   'mode is: ',
       //   mode,
@@ -46,6 +67,15 @@ export default function Editor({
       //   'activeTab is: ',
       //   activeTab
       // );
+
+      setConfig(
+        configs.splash_page || {
+          placeholder: '',
+          heading: '',
+          subheading: '',
+        }
+      );
+
       if (activeTab === 'bold') {
         console.log('still here');
         console.log(
@@ -80,6 +110,13 @@ export default function Editor({
       }
     }
     if (mode === 'email') {
+      setConfig(
+        configs.email || {
+          placeholder: '',
+          heading: '',
+          subheading: '',
+        }
+      );
       if (activeTab === 'bold') {
         if (subMode === 'generate') {
           console.log(
@@ -143,6 +180,13 @@ export default function Editor({
     }
     if (mode === 'banner') {
       if (activeTab === 'blurb') {
+        setConfig(
+          configs.blurb || {
+            placeholder: '',
+            heading: '',
+            subheading: '',
+          }
+        );
         if (subMode === 'generate') {
           console.log('banner_prompt: ', prompts.blurb_generation || '');
           setPrompt(prompts.blurb_generation || '');
@@ -167,6 +211,13 @@ export default function Editor({
         }
       }
       if (activeTab === 'banner') {
+        setConfig(
+          configs.banner || {
+            placeholder: '',
+            heading: '',
+            subheading: '',
+          }
+        );
         if (subMode === 'generate') {
           console.log('banner_prompt: ', prompts.banner_generation || '');
           setPrompt(prompts.banner_generation || '');
@@ -194,8 +245,8 @@ export default function Editor({
   };
 
   useEffect(() => {
-    console.log('Data in splash: ', models, prompts);
-    if (prompts && models) {
+    console.log('Data in editor: ', models, prompts, configs);
+    if (prompts && models && configs) {
       try {
         initializeValues();
       } catch {
@@ -203,7 +254,7 @@ export default function Editor({
       }
     }
     setIsLoading(false);
-  }, [models, prompts]);
+  }, [models, prompts, configs]);
 
   useEffect(() => {
     console.log(
@@ -240,10 +291,14 @@ export default function Editor({
     }
   };
 
+  const handleConfigChange = (val: Config) => {
+    setConfig(val);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      saveNewData();
+      savePromptData();
     }
   };
 
@@ -253,7 +308,48 @@ export default function Editor({
       .replace(/(?<!\})\}(?!\})/g, '}}'); // Single } → }}
   };
 
-  const saveNewData = async () => {
+  const saveConfigData = async () => {
+    try {
+      if (mode === 'splash') {
+        const configRes = await saveConfig({ mode: 'splash_page', config });
+        console.log(configRes);
+        const newConfigs = await getAllConfigs();
+        setConfigs(newConfigs);
+        showNotification('success', 'Updates were made successfully');
+        return;
+      }
+      if (mode === 'email') {
+        const configRes = await saveConfig({ mode: 'email', config });
+        console.log(configRes);
+        const newConfigs = await getAllConfigs();
+        setConfigs(newConfigs);
+        showNotification('success', 'Updates were made successfully');
+        return;
+      }
+      if (mode === 'banner') {
+        if (activeTab === 'blurb') {
+          const configRes = await saveConfig({ mode: 'blurb', config });
+          console.log(configRes);
+          const newConfigs = await getAllConfigs();
+          setConfigs(newConfigs);
+          showNotification('success', 'Updates were made successfully');
+          return;
+        }
+        if (activeTab === 'banner') {
+          const configRes = await saveConfig({ mode: 'banner', config });
+          console.log(configRes);
+          const newConfigs = await getAllConfigs();
+          setConfigs(newConfigs);
+          showNotification('success', 'Updates were made successfully');
+          return;
+        }
+      }
+    } catch {
+      showNotification('error', 'Unable to make updates at this time');
+    }
+  };
+
+  const savePromptData = async () => {
     try {
       if (mode === 'splash') {
         if (activeTab === 'bold') {
@@ -507,7 +603,7 @@ export default function Editor({
                 </div>
               </div>
             )}
-            <EditorForm
+            <PromptForm
               model={model}
               prompt={prompt}
               isLoading={isLoading}
@@ -515,7 +611,14 @@ export default function Editor({
               handleTemperatureChange={handleTemperatureChange}
               handlePromptChange={handlePromptChange}
               handleKeyDown={handleKeyDown}
-              saveNewData={saveNewData}
+              saveNewData={savePromptData}
+            />
+            <ConfigForm
+              config={config}
+              activeTab={activeTab}
+              isLoading={isLoading}
+              handleConfigChange={handleConfigChange}
+              saveNewData={saveConfigData}
             />
           </motion.div>
         ) : (

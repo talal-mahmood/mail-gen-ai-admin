@@ -1,14 +1,6 @@
 // import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Label } from '@radix-ui/react-label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Wand2 } from 'lucide-react';
@@ -18,27 +10,27 @@ type Model = {
   temperature: number;
 };
 
-interface EditorFormProps {
-  model: Model;
-  prompt: string;
+type Config = {
+  placeholder: string;
+  heading: string;
+  subheading: string;
+};
+
+interface ConfigFormProps {
+  config: Config;
+  activeTab: string;
   isLoading: boolean;
-  handlePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-  handleModelChange: (val: string) => void;
-  handleTemperatureChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleConfigChange: (val: Config) => void;
   saveNewData: () => void;
 }
 
-const EditorForm = ({
-  model,
-  prompt,
+const ConfigForm = ({
+  config,
+  activeTab,
   isLoading,
-  handlePromptChange,
-  handleKeyDown,
-  handleModelChange,
-  handleTemperatureChange,
+  handleConfigChange,
   saveNewData,
-}: EditorFormProps) => {
+}: ConfigFormProps) => {
   // const [inputText, setInputText] = useState('');
 
   // const replaceCurlyBraces = (text: string) => {
@@ -46,9 +38,32 @@ const EditorForm = ({
   //     .replace(/(?<!\{)\{(?!\{)/g, '{{') // Single { → {{
   //     .replace(/(?<!\})\}(?!\})/g, '}}'); // Single } → }}
   // };
+
+  const handleHeadingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleConfigChange({ ...config, heading: e.target.value });
+  };
+  const handleSubHeadingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleConfigChange({ ...config, subheading: e.target.value });
+  };
+  const handlePlaceholderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleConfigChange({ ...config, placeholder: e.target.value });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      saveNewData();
+    }
+  };
+
   return (
     <>
-      <div className='grid grid-cols-1 gap-4 mb-6'>
+      <div>
+        <h1 className='text-2xl mb-6 font-semibold text-blue-300'>
+          Heading{activeTab !== 'banner' && 's'} and Placeholder
+        </h1>
+      </div>
+      <div className='grid grid-cols-1 gap-4 mb-6 px-2'>
         <motion.div
           className='mb-6 relative space-y-6'
           initial={{ opacity: 0, height: 0 }}
@@ -99,60 +114,50 @@ const EditorForm = ({
               htmlFor='query'
               className='block mb-2 font-semibold text-blue-300'
             >
-              Prompt
+              {activeTab === 'banner' ? 'Heading' : 'With Textarea'}
             </Label>
-            <Textarea
+            <Input
               id='prompt'
-              value={prompt}
-              onChange={handlePromptChange}
+              value={config.heading}
+              onChange={handleHeadingChange}
               onKeyDown={handleKeyDown}
-              placeholder={`Enter your prompt`}
-              rows={5}
+              placeholder={`Enter heading for mode with textarea`}
               className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
             />
           </div>
-          <div className='space-y-4'>
+          {activeTab !== 'banner' && (
             <div>
               <Label
                 htmlFor='query'
                 className='block mb-2 font-semibold text-blue-300'
               >
-                Model
-              </Label>
-              <Select
-                value={model?.model_name}
-                onValueChange={handleModelChange}
-              >
-                <SelectTrigger className='w-full p-3 bg-gray-800 border border-gray-600 text-white'>
-                  <SelectValue placeholder='Select model' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='gpt-4o'>gpt-4o</SelectItem>
-                  <SelectItem value='gpt-4o-mini'>gpt-4o-mini</SelectItem>
-                  {/* <SelectItem value='gpt-3o-mini'>gpt-3o-mini</SelectItem> */}
-                  <SelectItem value='o3-mini'>o3-mini</SelectItem>
-                  <SelectItem value='o4-mini'>o4-mini</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label
-                htmlFor='query'
-                className='block mb-2 font-semibold text-blue-300'
-              >
-                Tempurature
+                Url Only
               </Label>
               <Input
-                id='temperature'
-                type='number'
-                min={0}
-                max={1}
-                step={0.01}
-                value={model?.temperature}
-                onChange={handleTemperatureChange}
-                className='w-full p-3 bg-gray-800 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                id='prompt'
+                value={config.subheading}
+                onChange={handleSubHeadingChange}
+                onKeyDown={handleKeyDown}
+                placeholder={`Enter heading for mode without textarea`}
+                className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
               />
             </div>
+          )}
+          <div>
+            <Label
+              htmlFor='query'
+              className='block mb-2 font-semibold text-blue-300'
+            >
+              Placeholder
+            </Label>
+            <Input
+              id='prompt'
+              value={config.placeholder}
+              onChange={handlePlaceholderChange}
+              onKeyDown={handleKeyDown}
+              placeholder={`Enter placeholder`}
+              className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
+            />
           </div>
         </motion.div>
       </div>
@@ -173,4 +178,4 @@ const EditorForm = ({
   );
 };
 
-export default EditorForm;
+export default ConfigForm;

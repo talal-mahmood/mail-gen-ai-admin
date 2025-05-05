@@ -5,6 +5,8 @@ type Model = {
   temperature: number;
 };
 
+type Config = any;
+
 export async function getAllPrompts(): Promise<any> {
   if (!baseUrl) {
     throw new Error('API base URL is not defined in environment variables');
@@ -52,6 +54,34 @@ export async function getAllModels(): Promise<any> {
     if (!response.ok) {
       const errorData = (await response.json()) || (await response.text());
       throw new Error(errorData.detail || 'Failed to get all models');
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error('API call error:', error);
+    throw error;
+  }
+}
+
+export async function getAllConfigs(): Promise<any> {
+  if (!baseUrl) {
+    throw new Error('API base URL is not defined in environment variables');
+  }
+
+  try {
+    // ${baseUrl} (removed for it to work with vercel)
+    const response = await fetch(`${baseUrl}/v1/config_items/`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify(requestData),
+    });
+
+    if (!response.ok) {
+      const errorData = (await response.json()) || (await response.text());
+      throw new Error(errorData.detail || 'Failed to get all configs');
     }
 
     return await response.json();
@@ -171,6 +201,68 @@ export async function saveModel({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(model),
+    });
+
+    if (!response.ok) {
+      const errorData = (await response.json()) || (await response.text());
+      throw new Error(errorData.detail || 'Failed to set splash prompt');
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error('API call error:', error);
+    throw error;
+  }
+}
+
+export async function getConfig(): Promise<any> {
+  if (!baseUrl) {
+    throw new Error('API base URL is not defined in environment variables');
+  }
+
+  try {
+    // ${baseUrl} (removed for it to work with vercel)
+    const response = await fetch(`${baseUrl}/v1/config_items/splash_page`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify(requestData),
+    });
+
+    if (!response.ok) {
+      const errorData = (await response.json()) || (await response.text());
+      throw new Error(errorData.detail || 'Failed to get splash prompt');
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error('API call error:', error);
+    throw error;
+  }
+}
+
+export async function saveConfig({
+  mode,
+  config,
+}: {
+  mode: string;
+  config: Config;
+}): Promise<any> {
+  if (!baseUrl) {
+    throw new Error('API base URL is not defined in environment variables');
+  }
+
+  try {
+    // ${baseUrl} (removed for it to work with vercel)
+    const response = await fetch(`${baseUrl}/v1/config_items/${mode}`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(config),
     });
 
     if (!response.ok) {

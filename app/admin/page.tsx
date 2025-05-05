@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Editor from './components/editor';
 import { Sparkles, Mail, ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getAllModels, getAllPrompts } from '@/lib/api';
+import { getAllModels, getAllPrompts, getAllConfigs } from '@/lib/api';
 import useAppStore from '@/lib/store';
 
 // type Prompts = {};
@@ -14,14 +14,16 @@ import useAppStore from '@/lib/store';
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('splash');
   const [mounted, setMounted] = useState(false);
-  const { setModels, setPrompts } = useAppStore();
+  const { setModels, setPrompts, setConfigs } = useAppStore();
 
   const fetchData = async () => {
     const allModels = await getAllModels();
     const allPrompts = await getAllPrompts();
-    console.log('All Data: ', allModels, allPrompts);
+    const allConfigs = await getAllConfigs();
+    console.log('All Data: ', allModels, allPrompts, allConfigs);
     setPrompts(allPrompts);
     setModels(allModels);
+    setConfigs(allConfigs);
   };
 
   // Prevent hydration mismatch
