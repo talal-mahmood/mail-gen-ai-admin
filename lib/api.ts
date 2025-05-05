@@ -5,8 +5,11 @@ type Model = {
   temperature: number;
 };
 
-type Config = any;
-
+type Config = {
+  placeholder: string;
+  heading: string;
+  subheading: string;
+};
 export async function getAllPrompts(): Promise<any> {
   if (!baseUrl) {
     throw new Error('API base URL is not defined in environment variables');

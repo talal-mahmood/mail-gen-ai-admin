@@ -613,6 +613,7 @@ export default function Editor({
               handleKeyDown={handleKeyDown}
               saveNewData={savePromptData}
             />
+            <hr className='m-10 border-gray-800' />
             <ConfigForm
               config={config}
               activeTab={activeTab}
