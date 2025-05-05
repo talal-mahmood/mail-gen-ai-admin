@@ -5,11 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Wand2 } from 'lucide-react';
 
-type Model = {
-  model_name: string;
-  temperature: number;
-};
-
 type Config = {
   placeholder: string;
   heading: string;
