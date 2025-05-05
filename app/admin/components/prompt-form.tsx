@@ -16,6 +16,7 @@ import { Wand2 } from 'lucide-react';
 type Model = {
   model_name: string;
   temperature: number;
+  provider: 'openai' | 'anthropic' | 'deepseek';
 };
 
 interface PromptFormProps {
@@ -131,7 +132,7 @@ const PromptForm = ({
                 <SelectTrigger className='w-full p-3 bg-gray-800 border border-gray-600 text-white'>
                   <SelectValue placeholder='Select model' />
                 </SelectTrigger>
-                <SelectContent className='bg-gray-800 text-white'>
+                <SelectContent className='bg-gray-800 text-white max-h-[300px]'>
                   {/* <SelectItem value='gpt-4o'>OpenAI - gpt-4o</SelectItem>
                   <SelectItem value='gpt-4o-mini'>
                     OpenAI - gpt-4o-mini
@@ -155,6 +156,7 @@ const PromptForm = ({
                   </SelectItem> */}
                   <SelectItem value='o3-mini'>OpenAI - o3-mini</SelectItem>
                   <SelectItem value='o4-mini'>OpenAI - o4-mini</SelectItem>
+
                   {/* Anthropic Models */}
                   <SelectItem value='claude-3-7-sonnet-20250219'>
                     Anthropic - Claude 3.7 Sonnet

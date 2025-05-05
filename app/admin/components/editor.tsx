@@ -19,6 +19,7 @@ import ConfigForm from './config-form';
 type Model = {
   model_name: string;
   temperature: number;
+  provider: 'openai' | 'anthropic' | 'deepseek';
 };
 
 type Config = {
@@ -37,6 +38,7 @@ export default function Editor({
   const [model, setModel] = useState<Model>({
     model_name: '',
     temperature: 0,
+    provider: 'openai',
   });
   const [config, setConfig] = useState<Config>({
     placeholder: '',
@@ -349,7 +351,33 @@ export default function Editor({
     }
   };
 
+  const getProviderFromModel = (
+    modelName: string
+  ): 'openai' | 'anthropic' | 'deepseek' => {
+    if (
+      modelName.startsWith('gpt-') ||
+      modelName.startsWith('o3-') ||
+      modelName.startsWith('o4-') ||
+      modelName === 'text-davinci-003'
+    ) {
+      return 'openai';
+    }
+
+    if (modelName.startsWith('claude-')) {
+      return 'anthropic';
+    }
+
+    if (modelName.startsWith('deepseek-')) {
+      return 'deepseek';
+    }
+
+    // Default or fallback provider
+    throw new Error(`Unknown provider for model: ${modelName}`);
+  };
+
   const savePromptData = async () => {
+    const provider = getProviderFromModel(model.model_name);
+
     try {
       if (mode === 'splash') {
         if (activeTab === 'bold') {
@@ -358,7 +386,10 @@ export default function Editor({
             prompt: replaceCurlyBraces(prompt),
           });
           console.log(promptRes);
-          const modelRes = await saveModel({ mode: 'splash_page', model });
+          const modelRes = await saveModel({
+            mode: 'splash_page',
+            model: { ...model, provider },
+          });
           console.log(modelRes);
           const newPrompts = await getAllPrompts();
           const newModels = await getAllModels();
@@ -375,7 +406,7 @@ export default function Editor({
           console.log(promptRes);
           const modelRes = await saveModel({
             mode: 'splash_page',
-            model,
+            model: { ...model, provider },
           });
           console.log(modelRes);
           const newPrompts = await getAllPrompts();
@@ -396,7 +427,7 @@ export default function Editor({
             console.log(promptRes);
             const modelRes = await saveModel({
               mode: 'professional_email',
-              model,
+              model: { ...model, provider },
             });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
@@ -414,7 +445,7 @@ export default function Editor({
             console.log(promptRes);
             const modelRes = await saveModel({
               mode: 'professional_email',
-              model,
+              model: { ...model, provider },
             });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
@@ -434,7 +465,7 @@ export default function Editor({
             console.log(promptRes);
             const modelRes = await saveModel({
               mode: 'casual_email',
-              model,
+              model: { ...model, provider },
             });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
@@ -452,7 +483,7 @@ export default function Editor({
             console.log(promptRes);
             const modelRes = await saveModel({
               mode: 'casual_email',
-              model,
+              model: { ...model, provider },
             });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
@@ -472,7 +503,10 @@ export default function Editor({
               prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
-            const modelRes = await saveModel({ mode: 'blurb', model });
+            const modelRes = await saveModel({
+              mode: 'blurb',
+              model: { ...model, provider },
+            });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
             const newModels = await getAllModels();
@@ -487,7 +521,10 @@ export default function Editor({
               prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
-            const modelRes = await saveModel({ mode: 'blurb', model });
+            const modelRes = await saveModel({
+              mode: 'blurb',
+              model: { ...model, provider },
+            });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
             const newModels = await getAllModels();
@@ -504,7 +541,10 @@ export default function Editor({
               prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
-            const modelRes = await saveModel({ mode: 'banner', model });
+            const modelRes = await saveModel({
+              mode: 'banner',
+              model: { ...model, provider },
+            });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
             const newModels = await getAllModels();
@@ -519,7 +559,10 @@ export default function Editor({
               prompt: replaceCurlyBraces(prompt),
             });
             console.log(promptRes);
-            const modelRes = await saveModel({ mode: 'banner', model });
+            const modelRes = await saveModel({
+              mode: 'banner',
+              model: { ...model, provider },
+            });
             console.log(modelRes);
             const newPrompts = await getAllPrompts();
             const newModels = await getAllModels();

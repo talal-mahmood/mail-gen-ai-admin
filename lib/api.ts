@@ -3,6 +3,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 type Model = {
   model_name: string;
   temperature: number;
+  provider: 'openai' | 'anthropic' | 'deepseek';
 };
 
 type Config = {
