@@ -140,17 +140,18 @@ const PromptForm = ({
                   <SelectItem value='o3-mini'>OpenAI - o3-mini</SelectItem>
                   <SelectItem value='o4-mini'>OpenAI - o4-mini</SelectItem> */}
                   {/* OpenAI Models */}
+                  <SelectItem value='gpt-4.1-mini'>OpenAI - gpt-4.1</SelectItem>
                   <SelectItem value='gpt-4o'>OpenAI - gpt-4o</SelectItem>
                   <SelectItem value='gpt-4o-mini'>
                     OpenAI - gpt-4o-mini
                   </SelectItem>
-                  <SelectItem value='gpt-4-turbo'>
+                  {/* <SelectItem value='gpt-4-turbo'>
                     OpenAI - gpt-4-turbo
                   </SelectItem>
                   <SelectItem value='gpt-4'>OpenAI - gpt-4</SelectItem>
                   <SelectItem value='gpt-3.5-turbo'>
                     OpenAI - gpt-3.5-turbo
-                  </SelectItem>
+                  </SelectItem> */}
                   {/* <SelectItem value='text-davinci-003'>
                     OpenAI - text-davinci-003
                   </SelectItem> */}
