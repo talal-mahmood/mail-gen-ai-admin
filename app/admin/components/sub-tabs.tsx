@@ -20,7 +20,7 @@ const SubTabs = ({
       className=''
     >
       <motion.div
-        className='glassmorphism w-max p-2 !-mt-6 mb-2 h-auto rounded-xl'
+        className='glassmorphism w-max p-2 !-my-6 h-auto rounded-xl'
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}

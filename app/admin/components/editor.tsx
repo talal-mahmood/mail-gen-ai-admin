@@ -667,6 +667,7 @@ export default function Editor({
             <hr className='m-10 border-gray-800' />
             <ConfigForm
               config={config}
+              mode={mode}
               activeTab={activeTab}
               isLoading={isLoading}
               handleConfigChange={handleConfigChange}
