@@ -9,6 +9,10 @@ type Config = {
   placeholder: string;
   heading: string;
   subheading: string;
+  styleheading: string;
+  boldstyle: string;
+  cozystyle: string;
+  urlheading: string;
 };
 
 interface ConfigFormProps {
@@ -42,6 +46,12 @@ const ConfigForm = ({
   };
   const handlePlaceholderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleConfigChange({ ...config, placeholder: e.target.value });
+  };
+  const handleStyleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleConfigChange({ ...config, styleheading: e.target.value });
+  };
+  const handleButtonUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleConfigChange({ ...config, urlheading: e.target.value });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -151,6 +161,70 @@ const ConfigForm = ({
               onChange={handlePlaceholderChange}
               onKeyDown={handleKeyDown}
               placeholder={`Enter placeholder`}
+              className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
+            />
+          </div>
+          <div>
+            <Label
+              htmlFor='query'
+              className='block mb-2 font-semibold text-blue-300'
+            >
+              Style Type
+            </Label>
+            <Input
+              id='prompt'
+              value={config.styleheading}
+              onChange={handleStyleTypeChange}
+              onKeyDown={handleKeyDown}
+              placeholder={`Enter style type`}
+              className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
+            />
+          </div>
+          <div>
+            <Label
+              htmlFor='query'
+              className='block mb-2 font-semibold text-blue-300'
+            >
+              Bold Style
+            </Label>
+            <Input
+              id='prompt'
+              value={config.boldstyle}
+              onChange={handleStyleTypeChange}
+              onKeyDown={handleKeyDown}
+              placeholder={`Enter bold style type`}
+              className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
+            />
+          </div>
+          <div>
+            <Label
+              htmlFor='query'
+              className='block mb-2 font-semibold text-blue-300'
+            >
+              Cozy Style
+            </Label>
+            <Input
+              id='prompt'
+              value={config.cozystyle}
+              onChange={handleStyleTypeChange}
+              onKeyDown={handleKeyDown}
+              placeholder={`Enter cozy style type`}
+              className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
+            />
+          </div>
+          <div>
+            <Label
+              htmlFor='query'
+              className='block mb-2 font-semibold text-blue-300'
+            >
+              Button Url
+            </Label>
+            <Input
+              id='prompt'
+              value={config.urlheading}
+              onChange={handleButtonUrlChange}
+              onKeyDown={handleKeyDown}
+              placeholder={`Enter button url`}
               className={`w-full p-4 bg-gray-800 rounded-lg border border-gray-600 transition-all duration-200`}
             />
           </div>

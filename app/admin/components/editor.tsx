@@ -26,6 +26,10 @@ type Config = {
   placeholder: string;
   heading: string;
   subheading: string;
+  styleheading: string;
+  boldstyle: string;
+  cozystyle: string;
+  urlheading: string;
 };
 
 export default function Editor({
@@ -44,6 +48,10 @@ export default function Editor({
     placeholder: '',
     heading: '',
     subheading: '',
+    styleheading: '',
+    boldstyle: '',
+    cozystyle: '',
+    urlheading: '',
   });
 
   const [activeTab, setActiveTab] = useState<string>(

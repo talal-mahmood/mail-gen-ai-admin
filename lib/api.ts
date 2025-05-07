@@ -10,7 +10,12 @@ type Config = {
   placeholder: string;
   heading: string;
   subheading: string;
+  styleheading: string;
+  boldstyle: string;
+  cozystyle: string;
+  urlheading: string;
 };
+
 export async function getAllPrompts(): Promise<any> {
   if (!baseUrl) {
     throw new Error('API base URL is not defined in environment variables');
